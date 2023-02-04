@@ -1,6 +1,7 @@
 import PageObject.MainPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
+import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.junit.Test;
@@ -36,10 +37,15 @@ public class QuestionsAboutImportantTests {
         };
     }
 
-    @Test
-    public void getTextOfItemWhenNumberOfItemIsTrue() {
+    @Before
+    public void initialize(){
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+    }
+
+
+    @Test
+    public void getTextOfItemWhenNumberOfItemIsTrue() {
         driver.get("https://qa-scooter.praktikum-services.ru/");
         // Клик по Item
         MainPage myObject = new MainPage(driver);

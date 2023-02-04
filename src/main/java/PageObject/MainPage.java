@@ -2,33 +2,50 @@ package PageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.sql.SQLOutput;
 import java.time.Duration;
 
 public class MainPage {
     private final WebDriver driver;
-    // Переменная типа String для работы с общим путём всех Item,
-    // в методе вместо N будет подставляться необходимый номер Item
-    private final String allPath = "html/body/div/div/div/div[5]/div[2]/div/div[N]/div[2]/p";
     private final By upperOrderButton = By.xpath("html/body/div/div/div/div[1]/div[2]/button[1]");
     private final By lowerOrderButton = By.xpath("html/body/div/div/div/div[4]/div[2]/div[5]/button[@class='Button_Button__ra12g Button_Middle__1CSJM']");
+    private  By [] itemsArray;
+    private  By [] itemsTextArray;
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
     }
 
+    public void creatingItemsArray(){
+        int arrayLength =  Integer.parseInt(driver.findElement(By.xpath(".//div[last()]/div[1]/div[@class='accordion__button']")).getAttribute("id").replaceAll("accordion__heading-",""));
+        itemsArray = new By[arrayLength+1];
+        for (int i = 1; i < itemsArray.length + 1; i++) {
+            itemsArray[i-1] = (By.xpath(".//div[" + (i) + "]/div[1]/div[@class='accordion__button']"));
+        }
+    }
+
+    public void creatingItemsTextArray(){
+        itemsTextArray = new By[itemsArray.length];
+        for (int i = 1; i < itemsArray.length+1; i++) {
+            itemsTextArray[i-1] = By.xpath(".//div["+i+"]/div[2]/p");
+        }
+    }
+
     public void clickItem(int numberOfItem){
-        By element = By.xpath(allPath.replace('N',Integer.toString(numberOfItem).charAt(0))
-        +"/parent::div/parent::div");
+        creatingItemsArray();
+        By element = itemsArray[numberOfItem-1];
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();",
                 driver.findElement(element));
         driver.findElement(element).click();
     }
 
     public String getTextOfItem(int numberOfItem){
-        By element = By.xpath(allPath.replace('N',Integer.toString(numberOfItem).charAt(0)));
+        creatingItemsTextArray();
+        By element = itemsTextArray[numberOfItem-1];
         // Ожижание отображения теста
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(ExpectedConditions.presenceOfElementLocated(element));

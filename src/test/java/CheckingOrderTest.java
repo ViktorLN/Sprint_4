@@ -3,6 +3,7 @@ import PageObject.OrderDatePage;
 import PageObject.OrderDetailsPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,6 +16,7 @@ import org.junit.runners.Parameterized;
 public class CheckingOrderTest {
     private WebDriver driver;
     private final By orderButton;
+    private String expected;
 
     public CheckingOrderTest(By orderButton) {
         this.orderButton = orderButton;
@@ -29,11 +31,14 @@ public class CheckingOrderTest {
         };
     }
 
-    @Test
-    public void checkPopupWindowTestCompletingRequiredFieldsWithSecondOrderButtonShowTrue(){
-        String expected = "Заказ оформлен";
+    @Before
+    public void initialize(){
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+        expected = "Заказ оформлен";
+    }
+    @Test
+    public void checkPopupWindowTestCompletingRequiredFieldsWithSecondOrderButtonShowTrue(){
         driver.get("https://qa-scooter.praktikum-services.ru/");
         MainPage mainPage = new MainPage(driver);
         mainPage.clickOrderButton(orderButton);
